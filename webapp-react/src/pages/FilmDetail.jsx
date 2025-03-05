@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api.js";
+import ReviewForm from "../components/ReviewForm.jsx";
 
 function FilmDetail() {
   const { id } = useParams();
   const [film, setFilm] = useState(null);
 
-  useEffect(() => {
+  const loadFilmData = () => {
     api
       .get(`/films/${id}`)
       .then((response) => setFilm(response.data))
       .catch((error) =>
         console.error("Errore caricamento dettaglio film:", error)
       );
+  };
+
+  useEffect(() => {
+    loadFilmData();
   }, [id]);
 
   if (!film) {
@@ -45,6 +50,9 @@ function FilmDetail() {
           <p>Nessuna recensione disponibile.</p>
         )}
       </ul>
+
+      <h3>Aggiungi una Recensione</h3>
+      <ReviewForm filmId={id} onReviewAdded={loadFilmData} />
     </div>
   );
 }
